@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import '../node_modules/tailwindcss/dist/lib.d.mts';
 
 @theme {
     --color-pixl: #eca749;
@@ -16,8 +16,8 @@
 
     @font-face {
         font-family: 'Departure Mono';
-        src: url('/public/fonts/DepartureMono-Regular.woff2') format('woff2'),
-        url('/public/fonts/DepartureMono-Regular.woff') format('woff');
+        src: url('/simons-work/public-work/public/fonts/DepartureMono-Regular.woff2') format('woff2'),
+        url('/simons-work/public-work/public/fonts/DepartureMono-Regular.woff') format('woff');
         font-weight: 400;
         font-style: normal;
     }
