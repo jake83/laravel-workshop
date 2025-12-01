@@ -13,11 +13,9 @@ use Illuminate\Database\Eloquent\Collection;
 class ProfilePageQuery
 {
     public function __construct(
-        private Profile  $subject,
+        private Profile $subject,
         private ?Profile $viewer,
-    )
-    {
-    }
+    ) {}
 
     public static function for(Profile $subject, ?Profile $viewer): self
     {
@@ -31,41 +29,40 @@ class ProfilePageQuery
 
     public function paginate(int $perPage = 20): LengthAwarePaginator
     {
-        return $this->baseQuery()->paginate($perPage)->through(fn(Post $post): Post => $this->normalize($post));
+        return $this->baseQuery()->paginate($perPage)->through(fn (Post $post): Post => $this->normalize($post));
     }
 
     public function get(): Collection
     {
-        return $this->baseQuery()->get()->map(fn(Post $post): Post => $this->normalize($post));
+        return $this->baseQuery()->get()->map(fn (Post $post): Post => $this->normalize($post));
     }
 
     private function baseQuery(): Builder
     {
         $viewerId = $this->viewer?->id ?? 0;
-        $posts = Post::where('profile_id', $this->subject->id)
+
+        return Post::where('profile_id', $this->subject->id)
             ->whereNull('parent_id')
             ->with([
-                'repostOf' => fn($q) => $q
+                'repostOf' => fn ($q) => $q
                     ->withCount(['likes', 'reposts', 'replies'])
-                    ->with('profile')
+                    ->with('profile'),
             ])
             ->withCount(['likes', 'reposts', 'replies'])
             ->withExists([
-                'likes as has_liked' => fn($q) => $q->where('profile_id', $viewerId),
-                'reposts as has_reposted' => fn($q) => $q->where('profile_id', $viewerId),
-                'repostOf as like_original' => fn($q) => $q->whereHas('likes', fn($q) => $q->where('profile_id', $viewerId)),
-                'repostOf as repost_original' => fn($q) => $q->whereHas('reposts', fn($q) => $q->where('profile_id', $viewerId)),
+                'likes as has_liked' => fn ($q) => $q->where('profile_id', $viewerId),
+                'reposts as has_reposted' => fn ($q) => $q->where('profile_id', $viewerId),
+                'repostOf as like_original' => fn ($q) => $q->whereHas('likes', fn ($q) => $q->where('profile_id', $viewerId)),
+                'repostOf as repost_original' => fn ($q) => $q->whereHas('reposts', fn ($q) => $q->where('profile_id', $viewerId)),
             ])
             ->latest();
-
-        return $posts;
     }
 
     private function normalize(Post $post): Post
     {
         if ($post->isRepost() && is_null($post->content)) {
-            $post->repostOf->has_liked = (bool)$post->like_original;
-            $post->repostOf->has_reposted = (bool)$post->repost_original;
+            $post->repostOf->has_liked = (bool) $post->like_original;
+            $post->repostOf->has_reposted = (bool) $post->repost_original;
         }
 
         return $post;

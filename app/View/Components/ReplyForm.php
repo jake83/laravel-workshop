@@ -5,26 +5,29 @@ declare(strict_types=1);
 namespace App\View\Components;
 
 use App\Models\Post;
+use App\Models\Profile;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
-class Reply extends Component
+class ReplyForm extends Component
 {
+    public Profile $profile;
+
     /**
      * Create a new component instance.
      */
-    public function __construct(
-        public Post $post,
-        public bool $showEngagement = true,
-        public bool $showReplies = false
-    ) {}
+    public function __construct(public Post $post)
+    {
+        $this->profile = Auth::user()->profile;
+    }
 
     /**
      * Get the view / contents that represent the component.
      */
     public function render(): View|Closure|string
     {
-        return view('components.reply');
+        return view('components.reply-form');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,11 +16,11 @@ class Profile extends Model
     use HasFactory;
 
     protected $fillable = [
-//        'name',
+        //        'name',
         'display_name',
         'handle',
         'bio',
-        'avatar_url'
+        'avatar_url',
     ];
 
     public function user(): BelongsTo

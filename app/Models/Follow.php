@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +15,7 @@ class Follow extends Model
 
     protected $fillable = [
         'follower_profile_id',
-        'following_profile_id'
+        'following_profile_id',
     ];
 
     public function follower(): BelongsTo
@@ -34,7 +36,7 @@ class Follow extends Model
 
         return static::firstOrCreate([
             'follower_profile_id' => $follower->id,
-            'following_profile_id' => $following->id
+            'following_profile_id' => $following->id,
         ]);
     }
 
@@ -45,7 +47,7 @@ class Follow extends Model
         }
 
         return static::where('follower_profile_id', $follower->id)
-                ->where('following_profile_id', $following->id)
-                ->delete() > 0;
+            ->where('following_profile_id', $following->id)
+            ->delete() > 0;
     }
 }

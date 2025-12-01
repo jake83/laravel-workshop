@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Profile;
-use App\Models\Post;
 use App\Models\Like;
+use App\Models\Post;
+use App\Models\Profile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -25,10 +25,10 @@ test('cannot create duplicate likes', function () {
     $profile = Profile::factory()->create();
     $post = Post::factory()->create();
 
-    $l1 = Like::createLike($profile, $post);
+    $like = Like::createLike($profile, $post);
     $l2 = Like::createLike($profile, $post);
 
-    expect($l1->id)->toBe($l2->id);
+    expect($like->id)->toBe($l2->id);
 });
 
 test('can remove a like', function () {

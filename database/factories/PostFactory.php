@@ -31,7 +31,7 @@ class PostFactory extends Factory
     {
         return $this->state([
             'repost_of_id' => $originalPost->id,
-            'content' => null
+            'content' => null,
         ]);
     }
 

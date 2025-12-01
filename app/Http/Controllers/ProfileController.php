@@ -1,32 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
 use App\Models\Profile;
-use App\Models\Post;
 use App\Queries\ProfilePageQuery;
 use App\Queries\ProfileWithRepliesQuery;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function show(Profile $profile)
+    public function show(Profile $profile): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $profile->loadCount(['followings', 'followers']);
 
         $posts = ProfilePageQuery::for($profile, Auth::user()?->profile)->get();
 
-        return view('profiles.show', compact('profile', 'posts'));
+        return view('profiles.show', ['profile' => $profile, 'posts' => $posts]);
     }
 
-    public function replies(Profile $profile)
+    public function replies(Profile $profile): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $profile->loadCount(['followings', 'followers']);
 
         $posts = ProfileWithRepliesQuery::for($profile, Auth::user()?->profile)->get();
 
-        return view('profiles.replies', compact('profile', 'posts'));
+        return view('profiles.replies', ['profile' => $profile, 'posts' => $posts]);
     }
 
     public function follow(Profile $profile)
@@ -35,7 +36,7 @@ class ProfileController extends Controller
 
         $follow = Follow::createFollow($currentProfile, $profile);
 
-        return response()->json(compact('follow'));
+        return response()->json(['follow' => $follow]);
     }
 
     public function unfollow(Profile $profile)
@@ -44,6 +45,6 @@ class ProfileController extends Controller
 
         $success = Follow::removeFollow($currentProfile, $profile);
 
-        return response()->json(compact('success'));
+        return response()->json(['success' => $success]);
     }
 }

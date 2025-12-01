@@ -90,7 +90,7 @@ class Post extends Model
     public static function removeRepost(Profile $profile, Post $post): bool
     {
         return static::where('profile_id', $profile->id)
-                ->where('repost_of_id', $post->id)
-                ->delete() > 0;
+            ->where('repost_of_id', $post->id)
+            ->delete() > 0;
     }
 }
