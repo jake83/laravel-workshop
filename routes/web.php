@@ -1,13 +1,12 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View {
-    return view('welcome');
-});
+Route::get('/', HomeController::class)->middleware('guest');
 
 if (app()->isLocal()) {
 
@@ -22,12 +21,12 @@ if (app()->isLocal()) {
 
     })->name('login');
 
-    Route::get('/dev/logout', function () {
+    Route::get('/dev/logout', function (): \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse {
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return redirect()->intended('/feed');
+        return redirect('/');
     });
 }
 
